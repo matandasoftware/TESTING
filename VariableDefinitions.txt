@@ -1,0 +1,78 @@
+Dataset Overview
+
+Complete data dictionary listing every column across all files, with data types and descriptions.
+
+## 1. **Train.csv**
+- **UniqueID (string)**: Unique customer identifier (UUID format).  
+- **next_3m_txn_count (integer)**: Target variable — total number of bank transactions between Nov 2015 and Jan 2016.
+
+## 2. **Test.csv**
+- **UniqueID (string)**: Unique customer identifier.  
+- **next_3m_txn_count (integer)**: To be predicted for these customers.
+
+## 3. **SampleSubmission.csv**
+- **UniqueID (string)**: Must match the IDs in Test.csv exactly.  
+- **next_3m_txn_count (integer)**: Your predicted transaction count (non-negative integer or float).
+
+## 4. **transactions_features.parquet**
+
+- **UniqueID (string)**: Customer identifier — join key to Train/Test.  
+
+- **AccountID (string)**: Bank account identifier (customers may have multiple accounts).  
+- **TransactionDate (timestamp)**: Date of transaction (all before prediction window).  
+- **TransactionAmount (float)**: Signed transaction amount in ZAR.  
+- **TransactionTypeDescription (string)**: Transaction category (13 types: Transfers & Payments, Charges & Fees, etc.).  
+- **TransactionBatchDescription (string)**: Batch processing category (8 types).  
+- **StatementBalance (float)**: Running account balance after this transaction.  
+- **IsDebitCredit (string)**: D = Debit (money out), C = Credit (money in).  
+- **ReversalTypeDescription (string)**: Reversal type if transaction was reversed.
+
+## 5. **financials_features.parquet**
+
+- **UniqueID (string)**: Customer identifier — join key.
+
+- **AccountID (string)**: Account identifier (14.4% null overall; 100% null for Mortgages).  
+- **RunDate (timestamp)**: Snapshot date for this financial record.  
+- **Product (string)**: Product category (Transactional, Investments, Mortgages).  
+- **NetInterestIncome (float)**: Net interest income for this account/period.  
+- **NetInterestRevenue (float)**: Net interest revenue (NII + fee adjustments).
+
+## 6. **demographics_clean.parquet**
+
+- **UniqueID (string)**: Customer identifier — join key.
+
+- **BirthDate (timestamp)**: Customer’s date of birth (data quality varies).  
+- **Gender (string)**: M or F (cleaned).  
+- **IncomeCategory (string)**: Income bracket (Low → Very High, No Income, Not Disclosed).  
+- **CustomerStatus (string)**: Customer lifecycle status.  
+- **ClientType (string)**: Client classification (Individual – Adult, Foreign Individual, etc.).  
+- **MaritalStatus (string)**: Single, Married, Divorced, Widowed.  
+- **OccupationCategory (string)**: Occupation grouping (19 categories).  
+- **IndustryCategory (string)**: Industry grouping (18 categories).  
+- **CustomerBankingType (string)**: Primary/Secondary/Main banking relationship (3.4% null).  
+- **CustomerOnboardingChannel (string)**: Channel used to onboard customer (<0.1% null).  
+- **ResidentialCityName (string)**: Customer’s residential city.  
+- **CountryCodeNationality (string)**: ISO country code of nationality.  
+- **AnnualGrossIncome (float)**: Annual gross income in ZAR (6.2% null).  
+- **LowIncomeFlag (string)**: Low income classification flag.  
+- **CertificationTypeDescription (string)**: ID document type (RSA ID, Passport, etc.).  
+- **ContactPreference (string)**: Contact consent preference.
+
+
+
+NB: 
+
+The dataset contains anonymised behavioural data for 11,944 Nedbank customers. 
+
+It spans up to 34 months of transaction history (December 2012 through October 2015): 
+
+    - monthly financial snapshots, 
+    - & cleaned demographic profiles. 
+
+
+TASK::
+
+
+objective: 
+
+predict next_3m_txn_count - the total number of bank transactions each customer will make in a future three-month window (November 2015 through January 2016).
